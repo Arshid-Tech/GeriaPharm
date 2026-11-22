@@ -1,5 +1,6 @@
 import { drugName, fa, labels, normalizeFa, number } from "../lib/fa";
 import type { DrugRecord } from "../types/types";
+import { calculateRenalMetrics } from "./calculators/cockcroftGault";
 export const conditions = [
   "Heart Failure",
   "Dementia",
@@ -30,9 +31,12 @@ export interface RegimenStats {
 /**
  * Cockcroft–Gault creatinine clearance (mL/min).
  * Explicit CrCl input always takes precedence over the calculated value.
+ * When height is provided, delegates to `calculateRenalMetrics` so IBW/AdjBW
+ * weight selection stays consistent across the clinical calculator, regimen
+ * audit, and risk model.
  */
 export function cockcroftGault(profile: PatientProfile) {
-  const { age, sex, weight, serumCreatinine } = profile;
+  const { age, sex, weight, height, serumCreatinine } = profile;
   if (
     !age ||
     !weight ||
@@ -42,6 +46,16 @@ export function cockcroftGault(profile: PatientProfile) {
     serumCreatinine <= 0
   )
     return undefined;
+  if (height !== undefined && height > 0) {
+    return calculateRenalMetrics({
+      sex,
+      age,
+      weight,
+      height,
+      serumCreatinine,
+      preferActualWeightOverIbw: profile.preferActualWeightOverIbw,
+    }).crcl;
+  }
   const factor = sex === "female" ? 0.85 : 1;
   return ((140 - age) * weight * factor) / (72 * serumCreatinine);
 }
@@ -167,7 +181,7 @@ export function matchesTarget(target: string, d: DrugRecord) {
   if (t.includes("anticholinergic") && d.isStrongAnticholinergic) return true;
   const base = name.split(" ")[0];
   return (
-    (!!base && new RegExp(`(?:^| )${base}(?: |$)`).test(t)) ||
+    (!!base && t.split(" ").includes(base)) ||
     classesFor(d).some((c) => t.includes(c)) ||
     d.brandNamesIran.some((b) => normalize(b) === t)
   );
@@ -430,9 +444,7 @@ export function auditRegimen(
         id: "age75",
         type: "Review needed",
         severity: "caution",
-        title:
-          "سن ۷۵ سال و بیشتر · " +
-          risky.map(drugName).join("، "),
+        title: "سن ۷۵ سال و بیشتر · " + risky.map(drugName).join("، "),
         detail:
           "در سالمندان بسیار مسن، دابیگاتران و داروهای ضدپلاکتی مانند پراسوگرل و تیکاگرلور با خطر خونریزی بیشتری همراه‌اند؛ در صورت وجود گزینه، آپیکسابان یا کلوپیدوگرل ارجح است.",
         action: "لزوم درمان، دوز و انتخاب دارو را با توجه به سن بازبینی کنید.",

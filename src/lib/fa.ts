@@ -1,4 +1,5 @@
 import type { DrugRecord } from "../types/types";
+import { matchesSmartSearch } from "../services/ml/searchEngine";
 export const number = (n: number) => new Intl.NumberFormat("fa-IR").format(n);
 const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
 const arabicDigits = "٠١٢٣٤٥٦٧٨٩";
@@ -140,16 +141,7 @@ export const tables = [
   },
 ];
 export function matchesSearch(d: DrugRecord, q: string) {
-  return normalizeFa(
-    [
-      d.genericName,
-      d.genericNameFa,
-      ...d.brandNamesIran,
-      fa(d.therapeuticCategory),
-      d.therapeuticCategory,
-      ...d.drugDiseaseInteractions.map((r) => fa(r.condition)),
-    ].join(" "),
-  ).includes(normalizeFa(q));
+  return matchesSmartSearch(d, q);
 }
 
 export const canonicalLabel = (value: string) =>

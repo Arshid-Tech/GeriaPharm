@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ShieldAlert, Info, Table, X, AlertTriangle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ShieldAlert, Info, X, AlertTriangle } from "lucide-react";
 import { Button } from "./ui/Primitives";
 import { number } from "../lib/fa";
 import {
@@ -19,10 +19,22 @@ interface GeriatricPanelProps {
  * cognitive burden, polypharmacy and Beers PIM — each dimension is reported
  * on its own scale (no composite score is computed).
  */
-export function GeriatricPanel({ panel, breakdown }: GeriatricPanelProps) {
-  const [showBreakdown, setShowBreakdown] = useState(false);
+export function GeriatricPanel({ panel }: GeriatricPanelProps) {
   const [showDetails, setShowDetails] = useState(false);
   const { frid, acb, polypharmacy, beers } = panel;
+
+  useEffect(() => {
+    if (!showDetails) return;
+    const prev = document.activeElement as HTMLElement | null;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowDetails(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      prev?.focus?.();
+    };
+  }, [showDetails]);
 
   return (
     <section
@@ -182,6 +194,9 @@ export function GeriatricPanel({ panel, breakdown }: GeriatricPanelProps) {
           role="dialog"
           aria-modal="true"
           aria-labelledby="geriatric-panel-details-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowDetails(false);
+          }}
         >
           <div className="bg-white dark:bg-[#101722] border border-gray-200 dark:border-gray-800 rounded-[32px] sm:rounded-[42px] max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-800 dark:text-slate-100">
             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800/80 bg-slate-50/50 dark:bg-[#151c28]/40">
@@ -203,6 +218,7 @@ export function GeriatricPanel({ panel, breakdown }: GeriatricPanelProps) {
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => setShowDetails(false)}
                 className="w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                 aria-label="بستن"

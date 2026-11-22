@@ -41,9 +41,13 @@ export async function passwordHash(password: string) {
   return salt + ":" + key.toString("hex");
 }
 async function verify(password: string, encoded: string) {
-  const [salt, key] = encoded.split(":");
+  const parts = encoded.split(":");
+  if (parts.length !== 2 || !parts[0] || !parts[1]) return false;
+  const [salt, key] = parts;
+  const expected = Buffer.from(key, "hex");
   const derived = (await scrypt(password, salt, 64)) as Buffer;
-  return timingSafeEqual(derived, Buffer.from(key, "hex"));
+  if (expected.length !== derived.length) return false;
+  return timingSafeEqual(derived, expected);
 }
 interface Config {
   databasePath: string;
@@ -263,12 +267,10 @@ export async function createApp(config: Config) {
       const current = readRegistry();
       if (req.get("if-match") !== String(current.revision)) {
         db.exec("ROLLBACK");
-        return res
-          .status(409)
-          .json({
-            message:
-              "فهرست توسط مدیر دیگری تغییر کرده است. همگام‌سازی کنید و دوباره تلاش کنید.",
-          });
+        return res.status(409).json({
+          message:
+            "فهرست توسط مدیر دیگری تغییر کرده است. همگام‌سازی کنید و دوباره تلاش کنید.",
+        });
       }
       const meds = registrySchema.parse(transform(current.medications));
       db.prepare(
@@ -362,12 +364,10 @@ export async function createApp(config: Config) {
           "Retry-After",
           String(Math.ceil((row.reset_at - now()) / 1000)),
         );
-        return void res
-          .status(429)
-          .json({
-            message:
-              "تلاش‌های ورود بیش از حد مجاز است. ۱۵ دقیقه دیگر دوباره تلاش کنید.",
-          });
+        return void res.status(429).json({
+          message:
+            "تلاش‌های ورود بیش از حد مجاز است. ۱۵ دقیقه دیگر دوباره تلاش کنید.",
+        });
       }
     }
     for (const { key } of keys)
@@ -424,7 +424,7 @@ export async function createApp(config: Config) {
         .status(400)
         .json({ message: "رمز عبور فعلی نادرست است." });
     const encoded = await passwordHash(input.newPassword);
-    db.exec("BEGIN");
+    db.exec("BEGIN IMMEDIATE");
     try {
       db.prepare("UPDATE admins SET password_hash=? WHERE id=?").run(
         encoded,
@@ -448,13 +448,11 @@ export async function createApp(config: Config) {
     ),
   );
   app.get("/api/admin/export", (_req, res) =>
-    res
-      .attachment("geriapharm-registry.json")
-      .json({
-        schemaVersion: 1,
-        exportedAt: new Date(now()).toISOString(),
-        medications: readRegistry().medications,
-      }),
+    res.attachment("geriapharm-registry.json").json({
+      schemaVersion: 1,
+      exportedAt: new Date(now()).toISOString(),
+      medications: readRegistry().medications,
+    }),
   );
   app.get("/api/admin/survey", (_req, res) => {
     const responses = readResponses();
@@ -562,23 +560,19 @@ export async function createApp(config: Config) {
         },
       }),
     );
-    app.get("/{*path}", (_req, res) =>
-      res.sendFile(resolve("dist/index.html")),
-    );
+    app.get("/{*path}", (_req, res) => res.sendFile(resolve("dist/index.html")));
   }
   app.use(
     (error: unknown, _req: Request, res: Response, _next: NextFunction) => {
       if (error instanceof z.ZodError)
-        return void res
-          .status(400)
-          .json({
-            message:
-              "اطلاعات ارسالی معتبر نیست. فیلدهای الزامی و قالب داده را بررسی کنید.",
-            issues: error.issues.map((i) => ({
-              path: i.path,
-              message: i.message,
-            })),
-          });
+        return void res.status(400).json({
+          message:
+            "اطلاعات ارسالی معتبر نیست. فیلدهای الزامی و قالب داده را بررسی کنید.",
+          issues: error.issues.map((i) => ({
+            path: i.path,
+            message: i.message,
+          })),
+        });
       if (error instanceof SyntaxError)
         return void res.status(400).json({ message: "قالب JSON معتبر نیست." });
       if ((error as { status?: number })?.status === 413)
