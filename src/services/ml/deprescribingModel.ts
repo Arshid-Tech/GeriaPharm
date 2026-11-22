@@ -1,4 +1,6 @@
 import type { DrugRecord } from "../../types/types";
+import { classesFor } from "../checker";
+import { stoppFallClassesFor } from "./geriatricRiskPanel";
 
 export interface TaperStep {
   week: string;
@@ -22,12 +24,20 @@ export function generateDeprescribingProtocols(
   _selectedConditions: string[] = [],
 ): DeprescribingProtocol[] {
   const protocols: DeprescribingProtocol[] = [];
+  const seen = new Set<string>();
 
   for (const med of medications) {
+    if (seen.has(med.id)) continue;
     const id = med.id.toLowerCase();
     const name = med.genericName.toLowerCase();
     const nameFa = med.genericNameFa || med.genericName;
     const cat = (med.therapeuticCategory || "").toLowerCase();
+    const atc = (med.atcCode ?? "").trim().toUpperCase();
+    const classes = classesFor(med);
+    const stoppClasses = stoppFallClassesFor(med);
+
+    const hasClass = (...targets: string[]) =>
+      classes.some((c) => targets.some((t) => c.includes(t)));
 
     // 1. Proton Pump Inhibitors (PPIs)
     if (
@@ -35,8 +45,12 @@ export function generateDeprescribingProtocols(
       name.includes("pantoprazole") ||
       name.includes("esomeprazole") ||
       name.includes("lansoprazole") ||
-      name.includes("rabeprazole")
+      name.includes("rabeprazole") ||
+      name.includes("dexlansoprazole") ||
+      atc.startsWith("A02BC") ||
+      hasClass("proton pump", "ppi")
     ) {
+      seen.add(med.id);
       protocols.push({
         targetDrugId: med.id,
         targetDrugGeneric: med.genericName,
@@ -71,6 +85,7 @@ export function generateDeprescribingProtocols(
           "تغییر سبک زندگی و پرهیز از دراز کشیدن پس از غذا",
         ],
       });
+      continue;
     }
 
     // 2. Benzodiazepines & Z-drugs
@@ -81,10 +96,24 @@ export function generateDeprescribingProtocols(
       name.includes("clonazepam") ||
       name.includes("oxazepam") ||
       name.includes("chlordiazepoxide") ||
+      name.includes("clorazepate") ||
+      name.includes("estazolam") ||
+      name.includes("midazolam") ||
+      name.includes("temazepam") ||
+      name.includes("triazolam") ||
       name.includes("zolpidem") ||
       name.includes("eszopiclone") ||
-      name.includes("zopiclone")
+      name.includes("zopiclone") ||
+      name.includes("zaleplon") ||
+      atc.startsWith("N05BA") ||
+      atc.startsWith("N05CD") ||
+      atc.startsWith("N05CF") ||
+      atc.startsWith("N03AE") ||
+      hasClass("benzodiazepine", "zdrug") ||
+      stoppClasses.includes(1) ||
+      stoppClasses.includes(2)
     ) {
+      seen.add(med.id);
       protocols.push({
         targetDrugId: med.id,
         targetDrugGeneric: med.genericName,
@@ -125,6 +154,7 @@ export function generateDeprescribingProtocols(
           "درمان اضطراب زمینه‌ای با مهارکننده‌های SSRI (مانند سرترالین)",
         ],
       });
+      continue;
     }
 
     // 3. Sulfonylureas
@@ -132,8 +162,13 @@ export function generateDeprescribingProtocols(
       name.includes("glibenclamide") ||
       name.includes("glyburide") ||
       name.includes("glimepiride") ||
-      name.includes("chlorpropamide")
+      name.includes("gliclazide") ||
+      name.includes("glipizide") ||
+      name.includes("chlorpropamide") ||
+      atc.startsWith("A10BB") ||
+      hasClass("sulfonylurea")
     ) {
+      seen.add(med.id);
       protocols.push({
         targetDrugId: med.id,
         targetDrugGeneric: med.genericName,
@@ -168,6 +203,7 @@ export function generateDeprescribingProtocols(
           "در صورت نیاز اجباری به سولفونیل‌اوره: گلی‌پیزید با شروع دوز اندک (۲.۵ میلی‌گرم)",
         ],
       });
+      continue;
     }
 
     // 4. Aspirin for Primary Prevention
@@ -175,6 +211,7 @@ export function generateDeprescribingProtocols(
       id.includes("aspirin-primary") ||
       (name.includes("aspirin") && !name.includes("secondary"))
     ) {
+      seen.add(med.id);
       protocols.push({
         targetDrugId: med.id,
         targetDrugGeneric: med.genericName,
@@ -203,14 +240,18 @@ export function generateDeprescribingProtocols(
           "کنترل قاطع فشار خون و درمان با استاتین در صورت اندیکاسیون",
         ],
       });
+      continue;
     }
 
     // 5. Systemic Estrogens
     if (
       name.includes("estrogen") ||
       name.includes("estradiol") ||
-      cat.includes("estrogen")
+      cat.includes("estrogen") ||
+      atc.startsWith("G03C") ||
+      hasClass("estrogen")
     ) {
+      seen.add(med.id);
       protocols.push({
         targetDrugId: med.id,
         targetDrugGeneric: med.genericName,
@@ -245,10 +286,12 @@ export function generateDeprescribingProtocols(
           "مرطوب‌کننده‌های غیرهورمونی واژن",
         ],
       });
+      continue;
     }
 
     // 6. Digoxin > 0.125 mg/day
-    if (name.includes("digoxin")) {
+    if (name.includes("digoxin") || atc === "C01AA05") {
+      seen.add(med.id);
       protocols.push({
         targetDrugId: med.id,
         targetDrugGeneric: med.genericName,
@@ -277,6 +320,7 @@ export function generateDeprescribingProtocols(
           "بتابلوکرهای کاردیوسلکتیو (بیزوپرولول، متوپرولول)",
         ],
       });
+      continue;
     }
 
     // 7. Skeletal Muscle Relaxants & Antipsychotics for BPSD
@@ -285,9 +329,18 @@ export function generateDeprescribingProtocols(
       name.includes("baclofen") ||
       name.includes("carisoprodol") ||
       name.includes("chlorzoxazone") ||
+      name.includes("cyclobenzaprine") ||
+      name.includes("metaxalone") ||
+      name.includes("orphenadrine") ||
       name.includes("tizanidine") ||
-      (cat.includes("antipsychotic") && med.beersCategories.includes("DRUG_DISEASE"))
+      atc.startsWith("M03B") ||
+      hasClass("muscle relaxant") ||
+      ((cat.includes("antipsychotic") ||
+        hasClass("antipsychotic") ||
+        atc.startsWith("N05A")) &&
+        med.beersCategories.includes("DRUG_DISEASE"))
     ) {
+      seen.add(med.id);
       protocols.push({
         targetDrugId: med.id,
         targetDrugGeneric: med.genericName,
@@ -327,6 +380,3 @@ export function generateDeprescribingProtocols(
 
   return protocols;
 }
-
-
-
