@@ -1,0 +1,35 @@
+{
+  "modelId": "geriapharm-adr-logreg-v1",
+  "version": "1.0.0",
+  "algorithm": "calibrated_logistic_regression",
+  "description": "Offline client-side logistic regression weights for geriatric ADR risk stratification, anchored to published GerontoNet ADR Risk Score predictors (Onder et al., Arch Intern Med 2010) and AGS Beers Criteria 2023 / Boustani ACB / STOPPFall.",
+  "references": [
+    "Onder G, Petrovic M, Tangiisuran B, et al. Development and validation of a score to assess risk of adverse drug reactions among in-hospital patients 65 years or older: the GerontoNet ADR risk score. Arch Intern Med. 2010;170(13):1142-1148.",
+    "2023 American Geriatrics Society Beers Criteria® Update Expert Panel. J Am Geriatr Soc. 2023;71(7):2002-2010.",
+    "Boustani M, Campbell N, Munger S, et al. Aging Health. 2008;4(3):311-320; Regenstrief ACB Scale 2012.",
+    "Seppala LJ, Petrovic M, Ryg J, et al. STOPPFall. Age Ageing. 2021;50(4):1189-1199."
+  ],
+  "intercept": -2.55,
+  "weights": {
+    "polypharmacyPerExcessDrug": 0.16,
+    "hyperpolypharmacyBonus": 0.55,
+    "pimAvoidPerDrug": 0.42,
+    "pimConditionalPerDrug": 0.22,
+    "acbPerPoint": 0.18,
+    "anticholinergicSynergyBonus": 0.45,
+    "cnsPolypharmacyBonus": 0.85,
+    "drugDiseasePerConflict": 0.52,
+    "renalViolationPerDrug": 0.58,
+    "fridPerDistinctClass": 0.14,
+    "age75To84Bonus": 0.22,
+    "age85PlusBonus": 0.45
+  },
+  "caps": {
+    "polypharmacy": 1.8,
+    "pimBurden": 2.2,
+    "anticholinergic": 1.6,
+    "drugDisease": 1.8,
+    "renalViolation": 1.8,
+    "fridClasses": 0.9
+  }
+}
