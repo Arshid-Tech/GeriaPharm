@@ -1,5 +1,9 @@
 import type { DrugRecord } from "../../types/types";
-import { type PatientProfile, cockcroftGault } from "../checker";
+import {
+  type PatientProfile,
+  cockcroftGault,
+  parseThreshold,
+} from "../checker";
 
 export type RiskTier = "کم‌خطر" | "متوسط" | "پرخطر" | "بحرانی";
 export type RiskColor = "emerald" | "amber" | "rose" | "purple";
@@ -168,23 +172,26 @@ export function evaluateAdverseDrugReactionRisk(
 
   let renalMismatchPenalty = 0;
   const calculatedCrCl = cockcroftGault(profile);
-  const effectiveCrCl = profile.CrCl ?? calculatedCrCl;
+  const renalValues: Record<"CrCl" | "eGFR", number | undefined> = {
+    CrCl: profile.CrCl ?? calculatedCrCl,
+    eGFR: profile.eGFR,
+  };
 
-  if (effectiveCrCl !== undefined) {
-    for (const med of medications) {
-      if (med.renalConsiderations) {
-        const thresholdMatch =
-          med.renalConsiderations.threshold.match(/\d+(\.\d+)?/);
-        const thresholdVal = thresholdMatch
-          ? parseFloat(thresholdMatch[0])
-          : null;
-        if (thresholdVal !== null && effectiveCrCl < thresholdVal) {
-          renalMismatchPenalty += 15;
-          drivers.push(
-            `نیاز به تعدیل دوز کلیوی (جدول ۶): داروی ${med.genericNameFa || med.genericName} برای کلیرانس ${Math.round(effectiveCrCl)} (+15 نمره).`,
-          );
-        }
-      }
+  for (const med of medications) {
+    if (!med.renalConsiderations) continue;
+    const rule = parseThreshold(med.renalConsiderations.threshold);
+    if (!rule) continue;
+    const metricValue = renalValues[rule.metric as "CrCl" | "eGFR"];
+    if (
+      metricValue !== undefined &&
+      Number.isFinite(metricValue) &&
+      metricValue >= 0 &&
+      rule.test(metricValue)
+    ) {
+      renalMismatchPenalty += 15;
+      drivers.push(
+        `نیاز به تعدیل دوز کلیوی (جدول ۶): داروی ${med.genericNameFa || med.genericName} برای ${rule.metric} برابر ${Math.round(metricValue)} (+15 نمره).`,
+      );
     }
   }
 
@@ -255,5 +262,3 @@ export function evaluateAdverseDrugReactionRisk(
     },
   };
 }
-
-

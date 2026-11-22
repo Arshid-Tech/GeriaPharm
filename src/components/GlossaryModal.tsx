@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { BookOpen, X, ChevronDown, ChevronUp, Info } from "lucide-react";
 import { glossaryEntries, type GlossaryEntry } from "./glossaryData";
 
@@ -53,6 +53,19 @@ export function GlossaryModal({
   const [activeCategory, setActiveCategory] = useState<string>("همه");
   const [expandedTerm, setExpandedTerm] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const prev = document.activeElement as HTMLElement | null;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      prev?.focus?.();
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const categories = ["همه", "مخفف‌های بالینی", "دسته‌بندی‌های بیرز"];
@@ -72,6 +85,10 @@ export function GlossaryModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 sm:p-6"
       role="dialog"
       aria-modal="true"
+      aria-labelledby="glossary-modal-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div className="bg-white dark:bg-[#101722] border border-gray-200 dark:border-gray-800 rounded-[32px] sm:rounded-[42px] max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden transition-all text-slate-800 dark:text-slate-100">
         <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800/80 bg-slate-50/50 dark:bg-[#151c28]/40">
@@ -80,7 +97,7 @@ export function GlossaryModal({
               <BookOpen size={24} />
             </div>
             <div>
-              <h2 className="text-xl font-bold tracking-tight">
+              <h2 id="glossary-modal-title" className="text-xl font-bold tracking-tight">
                 راهنمای اصطلاحات و اختصارات بالینی
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -89,6 +106,7 @@ export function GlossaryModal({
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
             aria-label="بستن"
@@ -108,6 +126,7 @@ export function GlossaryModal({
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             {categories.map((cat) => (
               <button
+                type="button"
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition ${
@@ -143,7 +162,7 @@ export function GlossaryModal({
                       <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">{item.shortDescription}</p>
                     </div>
                   </div>
-                  <button className="text-slate-400 mt-1">
+                  <button type="button" className="text-slate-400 mt-1" aria-label={expandedTerm === item.term ? "بستن جزئیات" : "نمایش جزئیات"}>
                     {expandedTerm === item.term ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
                 </div>
@@ -160,6 +179,7 @@ export function GlossaryModal({
 
         <div className="p-4 sm:p-5 border-t border-gray-100 dark:border-gray-800/80 bg-slate-50 dark:bg-[#151c28]/60 flex justify-end">
           <button
+            type="button"
             onClick={onClose}
             className="px-6 py-2 rounded-full bg-[#4541fe] text-white text-sm font-medium hover:brightness-110 shadow-sm transition"
           >
@@ -170,4 +190,3 @@ export function GlossaryModal({
     </div>
   );
 }
-
