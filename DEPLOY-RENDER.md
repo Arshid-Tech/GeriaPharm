@@ -28,10 +28,10 @@
 
 | فیلد / متغیر | مقدار | توضیح |
 | :--- | :--- | :--- |
-| **Build Command** | `NODE_ENV=development npm install --include=dev && npm run build` | نصب کامل `devDependencies` برای تایپ‌چک و بیلد فرانت‌اند (`dist/`) و سرور (`dist-server/`) |
-| **Start Command** | `NODE_ENV=production node dist-server/index.mjs` | اجرای سرور در حالت تولید بدون نیاز به تنظیم سراسری `NODE_ENV=production` |
+| **Build Command** | `npm ci && npm run build` *(یا `npm install && npm run build`)* | نصب وابستگی‌ها، تایپ‌چک و بیلد فرانت‌اند (`dist/`) و سرور (`dist-server/`) |
+| **Start Command** | `npm start` | اجرای هم‌زمان فرانت‌اند و API در حالت تولید (`NODE_ENV=production`) |
 | **Health Check Path** | `/api/health` | پاسخ `{"status":"ok","database":"postgres"}` |
-| `NODE_VERSION` | `22.16.0` | نسخه Node سازگار با `engines` و امکانات مدرن پروژه |
+| `NODE_VERSION` | `22.16.0` | نسخه Node سازگار با `engines` پروژه |
 | `DATABASE_URL` | `postgresql://...` (Internal URL از Render PostgreSQL) | اتصال پایدار به دیتابیس PostgreSQL |
 | `APP_ORIGIN` | `https://geriapharm.arshid.tech,https://geriapharm.onrender.com` | دامنه‌های مجاز برای درخواست‌های نوشتنی (ورود ادمین، ویرایش، نظرسنجی) |
 | `COOKIE_SECURE` | `true` | الزام HTTPS برای کوکی نشست ادمین |
@@ -39,7 +39,7 @@
 | `ADMIN_EMAIL` | ایمیل مدیر | فقط برای ساخت اولین حساب مدیر |
 | `ADMIN_PASSWORD` | رمز قوی (حداقل ۱۲ کاراکتر) | فقط برای راه‌اندازی اولیه (پس از ورود از پنل تغییر دهید) |
 
-> **نکته مهم:** متغیر `NODE_ENV=production` را در بخش **Environment Variables** سرویس Render تنظیم **نکنید**؛ چون Render آن را در مرحله Build هم اعمال می‌کند و باعث می‌شود `npm` پکیج‌های `devDependencies` را حذف کند. `startCommand` خودش `NODE_ENV=production` را در زمان اجرا ست می‌کند.
+> **نکته مهم:** متغیر `NODE_ENV=production` را در بخش **Environment Variables** سرویس Render تنظیم **نکنید**؛ چون Render آن را در مرحله Build هم اعمال می‌کند و باعث می‌شود `npm` پکیج‌های `devDependencies` را نصب نکند. دستور `npm start` خودش `NODE_ENV=production` را در زمان اجرا تنظیم می‌کند.
 
 ---
 
