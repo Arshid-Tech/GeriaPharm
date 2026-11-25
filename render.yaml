@@ -1,0 +1,34 @@
+# Render Blueprint — deploys GeriaPharm (Frontend + Express API) + Managed PostgreSQL
+databases:
+  - name: geriapharm-db
+    plan: free
+    databaseName: geriapharm
+    user: geriapharm
+
+services:
+  - type: web
+    name: geriapharm
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: APP_ORIGIN
+        value: https://geriapharm.arshid.tech,https://geriapharm.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: geriapharm-db
+          property: connectionString
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false

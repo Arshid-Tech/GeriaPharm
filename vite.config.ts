@@ -9,7 +9,12 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["icon.svg", "icon-192.png", "icon-512.png"],
+      includeAssets: [
+        "icon.svg",
+        "icon-192.png",
+        "icon-512.png",
+        "theme-init.js",
+      ],
       manifest: {
         name: "GeriaPharm | سامانه دارودرمانی سالمندان",
         short_name: "GeriaPharm",
