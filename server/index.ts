@@ -1,15 +1,30 @@
-import { createApp } from "./app";
+import { createApp, normalizeOrigins } from "./app";
 import { resolve } from "node:path";
 import { readFileSync } from "node:fs";
+
 const production = process.env.NODE_ENV === "production";
-const origin = process.env.APP_ORIGIN ?? "http://localhost:5173";
+const onRender = process.env.RENDER === "true";
+
+const rawOrigins = [
+  process.env.APP_ORIGIN,
+  onRender ? process.env.RENDER_EXTERNAL_URL : undefined,
+]
+  .filter(Boolean)
+  .join(",");
+
+const origin = rawOrigins || "http://localhost:5173";
+const origins = normalizeOrigins(origin);
+
 if (
   production &&
-  !origin.startsWith("https://") &&
-  process.env.COOKIE_SECURE !== "false"
-)
+  process.env.COOKIE_SECURE !== "false" &&
+  [...origins].some((item) => !item.startsWith("https://"))
+) {
   throw new Error("APP_ORIGIN باید نشانی HTTPS سایت باشد.");
-const { app, db } = await createApp({
+}
+
+const { app, close } = await createApp({
+  databaseUrl: process.env.DATABASE_URL,
   databasePath: resolve(process.env.DATABASE_PATH ?? "data/geriapharm.sqlite"),
   origin,
   secureCookies: process.env.COOKIE_SECURE === "false" ? false : production,
@@ -19,17 +34,21 @@ const { app, db } = await createApp({
     : process.env.ADMIN_PASSWORD,
   serveStatic: production,
   trustProxy: process.env.TRUST_LOOPBACK_PROXY === "true",
-  proxyHops: process.env.TRUST_PROXY_HOPS === "1" ? 1 : undefined,
+  proxyHops:
+    process.env.TRUST_PROXY_HOPS === "1" || onRender ? 1 : undefined,
 });
+
 const port = Number(process.env.PORT ?? 3001);
-const server = app.listen(port, process.env.HOST ?? "127.0.0.1", () =>
-  console.log(`GeriaPharm API: http://localhost:${port}`),
+const host = process.env.HOST ?? (onRender || production ? "0.0.0.0" : "127.0.0.1");
+
+const server = app.listen(port, host, () =>
+  console.log(`GeriaPharm API: http://${host}:${port}`),
 );
+
 for (const signal of ["SIGINT", "SIGTERM"])
   process.on(signal, () => {
     server.close(() => {
-      db.close();
-      process.exit(0);
+      void close().finally(() => process.exit(0));
     });
     setTimeout(() => process.exit(1), 10000).unref();
   });
