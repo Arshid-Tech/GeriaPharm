@@ -10,12 +10,12 @@ services:
     name: geriapharm
     runtime: node
     plan: free
-    buildCommand: npm install --include=dev && npm run build
-    startCommand: npm start
+    buildCommand: NODE_ENV=development npm install --include=dev && npm run build
+    startCommand: NODE_ENV=production node dist-server/index.mjs
     healthCheckPath: /api/health
     envVars:
-      - key: NODE_ENV
-        value: production
+      - key: NODE_VERSION
+        value: 22.16.0
       - key: HOST
         value: 0.0.0.0
       - key: COOKIE_SECURE

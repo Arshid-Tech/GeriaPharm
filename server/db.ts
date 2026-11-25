@@ -1,4 +1,4 @@
-import { DatabaseSync, type SQLInputValue } from "node:sqlite";
+import type { DatabaseSync, SQLInputValue } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 
@@ -23,6 +23,13 @@ export interface DatabaseStore extends QueryExecutor {
   migrate(): Promise<void>;
   transaction<T>(fn: (tx: QueryExecutor) => Promise<T>): Promise<T>;
   close(): Promise<void>;
+}
+
+interface PgQueryable {
+  query(
+    text: string,
+    values?: unknown[],
+  ): Promise<{ rows: unknown[]; rowCount: number | null }>;
 }
 
 function toPgPlaceholders(sql: string): string {
@@ -54,11 +61,12 @@ export async function createDatabaseStore(options: {
   return createSqliteStore(options.databasePath ?? "data/geriapharm.sqlite");
 }
 
-function createSqliteStore(databasePath: string): DatabaseStore {
+async function createSqliteStore(databasePath: string): Promise<DatabaseStore> {
   if (databasePath !== ":memory:") {
     mkdirSync(dirname(databasePath), { recursive: true, mode: 0o700 });
   }
-  const db = new DatabaseSync(databasePath);
+  const { DatabaseSync: SqliteDatabase } = await import("node:sqlite");
+  const db = new SqliteDatabase(databasePath);
   db.exec(
     "PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;",
   );
@@ -129,9 +137,7 @@ async function createPostgresStore(connectionString: string): Promise<DatabaseSt
     connectionTimeoutMillis: 10_000,
   });
 
-  const makeExecutor = (
-    runner: Pick<import("pg").PoolClient, "query">,
-  ): QueryExecutor => ({
+  const makeExecutor = (runner: PgQueryable): QueryExecutor => ({
     async get<T>(sql: string, ...params: SqlParam[]) {
       const res = await runner.query(toPgPlaceholders(sql), params);
       return res.rows[0] as T | undefined;
