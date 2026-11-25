@@ -28,7 +28,7 @@
 
 | فیلد / متغیر | مقدار | توضیح |
 | :--- | :--- | :--- |
-| **Build Command** | `npm install && npm run build` | تایپ‌چک، بیلد فرانت‌اند (`dist/`) و بیلد سرور (`dist-server/`) |
+| **Build Command** | `npm install --include=dev && npm run build` | نصب `devDependencies` حتی با `NODE_ENV=production`، تایپ‌چک و بیلد فرانت‌اند (`dist/`) و سرور (`dist-server/`) |
 | **Start Command** | `npm start` | اجرای هم‌زمان فرانت‌اند و API |
 | **Health Check Path** | `/api/health` | پاسخ `{"status":"ok","database":"postgres"}` |
 | `NODE_ENV` | `production` | حالت تولید و فعال‌سازی سرو فایل‌های `dist/` |
