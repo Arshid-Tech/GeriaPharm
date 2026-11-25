@@ -28,10 +28,10 @@
 
 | فیلد / متغیر | مقدار | توضیح |
 | :--- | :--- | :--- |
-| **Build Command** | `npm install --include=dev && npm run build` | نصب `devDependencies` حتی با `NODE_ENV=production`، تایپ‌چک و بیلد فرانت‌اند (`dist/`) و سرور (`dist-server/`) |
-| **Start Command** | `npm start` | اجرای هم‌زمان فرانت‌اند و API |
+| **Build Command** | `NODE_ENV=development npm install --include=dev && npm run build` | نصب کامل `devDependencies` برای تایپ‌چک و بیلد فرانت‌اند (`dist/`) و سرور (`dist-server/`) |
+| **Start Command** | `NODE_ENV=production node dist-server/index.mjs` | اجرای سرور در حالت تولید بدون نیاز به تنظیم سراسری `NODE_ENV=production` |
 | **Health Check Path** | `/api/health` | پاسخ `{"status":"ok","database":"postgres"}` |
-| `NODE_ENV` | `production` | حالت تولید و فعال‌سازی سرو فایل‌های `dist/` |
+| `NODE_VERSION` | `22.16.0` | نسخه Node سازگار با `engines` و امکانات مدرن پروژه |
 | `DATABASE_URL` | `postgresql://...` (Internal URL از Render PostgreSQL) | اتصال پایدار به دیتابیس PostgreSQL |
 | `APP_ORIGIN` | `https://geriapharm.arshid.tech,https://geriapharm.onrender.com` | دامنه‌های مجاز برای درخواست‌های نوشتنی (ورود ادمین، ویرایش، نظرسنجی) |
 | `COOKIE_SECURE` | `true` | الزام HTTPS برای کوکی نشست ادمین |
@@ -39,7 +39,7 @@
 | `ADMIN_EMAIL` | ایمیل مدیر | فقط برای ساخت اولین حساب مدیر |
 | `ADMIN_PASSWORD` | رمز قوی (حداقل ۱۲ کاراکتر) | فقط برای راه‌اندازی اولیه (پس از ورود از پنل تغییر دهید) |
 
-> **نکته:** `APP_ORIGIN` از چند دامنه جداشده با ویرگول (`,`) پشتیبانی می‌کند و اسلش پایانی (`/`) را به‌صورت خودکار حذف می‌کند. اگر دامنه اختصاصی شما از طریق Cloudflare Worker متصل است، حتماً دامنه نهایی کاربر (`https://geriapharm.arshid.tech`) را در `APP_ORIGIN` قرار دهید تا خطای `403` در ورود ادمین رخ ندهد.
+> **نکته مهم:** متغیر `NODE_ENV=production` را در بخش **Environment Variables** سرویس Render تنظیم **نکنید**؛ چون Render آن را در مرحله Build هم اعمال می‌کند و باعث می‌شود `npm` پکیج‌های `devDependencies` را حذف کند. `startCommand` خودش `NODE_ENV=production` را در زمان اجرا ست می‌کند.
 
 ---
 
