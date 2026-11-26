@@ -2,7 +2,15 @@ import { createApp, normalizeOrigins } from "./app";
 import { resolve } from "node:path";
 import { readFileSync } from "node:fs";
 
-const production = process.env.NODE_ENV === "production";
+function positiveInt(value: string | undefined): number | undefined {
+  if (!value) return undefined;
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+}
+
+const production =
+  process.env.NODE_ENV === "production" ||
+  process.argv.includes("--production");
 const onRender = process.env.RENDER === "true";
 
 const rawOrigins = [
@@ -36,10 +44,13 @@ const { app, close } = await createApp({
   trustProxy: process.env.TRUST_LOOPBACK_PROXY === "true",
   proxyHops:
     process.env.TRUST_PROXY_HOPS === "1" || onRender ? 1 : undefined,
+  surveyRateLimit: positiveInt(process.env.SURVEY_RATE_LIMIT),
+  loginIpRateLimit: positiveInt(process.env.LOGIN_IP_RATE_LIMIT),
 });
 
 const port = Number(process.env.PORT ?? 3001);
-const host = process.env.HOST ?? (onRender || production ? "0.0.0.0" : "127.0.0.1");
+const host =
+  process.env.HOST ?? (onRender || production ? "0.0.0.0" : "127.0.0.1");
 
 const server = app.listen(port, host, () =>
   console.log(`GeriaPharm API: http://${host}:${port}`),

@@ -45,6 +45,15 @@ export function normalizeOrigins(raw: string): Set<string> {
   );
 }
 
+/**
+ * Escapes a single CSV cell: guards against spreadsheet formula injection
+ * (`=`, `+`, `-`, `@`, tab, CR) and quotes cells with commas/quotes/newlines.
+ */
+export function csvCell(value: string) {
+  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  return /[",\r\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
+}
+
 export async function passwordHash(password: string) {
   const salt = randomBytes(16).toString("hex");
   const key = (await scrypt(password, salt, 64)) as Buffer;
@@ -71,6 +80,8 @@ interface Config {
   serveStatic?: boolean;
   trustProxy?: boolean;
   proxyHops?: number;
+  surveyRateLimit?: number;
+  loginIpRateLimit?: number;
   now?: () => number;
 }
 
@@ -106,6 +117,14 @@ export async function createApp(config: Config) {
   );
 
   const allowedOrigins = normalizeOrigins(config.origin);
+  const surveyRateLimit =
+    config.surveyRateLimit && config.surveyRateLimit > 0
+      ? config.surveyRateLimit
+      : 20;
+  const loginIpRateLimit =
+    config.loginIpRateLimit && config.loginIpRateLimit > 0
+      ? config.loginIpRateLimit
+      : 8;
   const dummy = await passwordHash(token());
   const now = config.now ?? Date.now;
   const app = express();
@@ -273,11 +292,6 @@ export async function createApp(config: Config) {
     }));
   }
 
-  /** Escapes a single CSV cell; Persian text with commas/quotes stays intact. */
-  function csvCell(value: string) {
-    return /[",\r\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
-  }
-
   async function readRegistry(exec: QueryExecutor = store, forUpdate = false) {
     const sql =
       forUpdate && store.kind === "postgres"
@@ -351,7 +365,11 @@ export async function createApp(config: Config) {
     const createdAt = new Date(input.createdAt).getTime();
     if (createdAt > now() + 5 * 60 * 1000)
       return void res.status(400).json({ message: "زمان پاسخ معتبر نیست." });
-    const limit = await consume(hash("survey:" + req.ip), 20, 60 * 60 * 1000);
+    const limit = await consume(
+      hash("survey:" + req.ip),
+      surveyRateLimit,
+      60 * 60 * 1000,
+    );
     if (!limit.allowed) {
       res.setHeader("Retry-After", String(limit.retryAfter));
       return void res.status(429).json({
@@ -403,7 +421,7 @@ export async function createApp(config: Config) {
       .parse(req.body);
     const email = input.email.toLowerCase();
     const keys = [
-      { key: hash("ip:" + req.ip), limit: 8 },
+      { key: hash("ip:" + req.ip), limit: loginIpRateLimit },
       { key: hash("account:" + email), limit: 30 },
     ];
     await store.run("DELETE FROM login_attempts WHERE reset_at<=?", now());
