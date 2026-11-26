@@ -9,6 +9,6 @@
         window.matchMedia("(prefers-color-scheme: dark)").matches);
     if (dark) document.documentElement.classList.add("dark");
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = dark ? "#090d16" : "#f8fafc";
+    if (meta) meta.content = dark ? "#0c131d" : "#f6f8fa";
   } catch (e) {}
 })();

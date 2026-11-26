@@ -137,6 +137,11 @@ async function createPostgresStore(connectionString: string): Promise<DatabaseSt
     connectionTimeoutMillis: 10_000,
   });
 
+  // Prevent unhandled error crashes when managed cloud PostgreSQL drops idle connections.
+  pool.on("error", (err: Error) => {
+    console.error("خطای اتصال بیکار PostgreSQL:", err.message);
+  });
+
   const makeExecutor = (runner: PgQueryable): QueryExecutor => ({
     async get<T>(sql: string, ...params: SqlParam[]) {
       const res = await runner.query(toPgPlaceholders(sql), params);

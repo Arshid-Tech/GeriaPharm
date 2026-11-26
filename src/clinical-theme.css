@@ -1,0 +1,364 @@
+/* ==========================================================================
+   GeriaPharm Clinical CDSS Design System
+   Calm, high-contrast medical workspace (Slate / Clinical Teal)
+   Designed for physicians, clinical pharmacists, and geriatric care teams.
+   ========================================================================== */
+
+:root {
+  /* Clinical palette tokens */
+  --color-midnight-ink: #0f172a;
+  --color-linen-lavender: #f6f8fa;
+  --color-pure-white: #ffffff;
+  --color-muted-graphite: #64748b;
+  --color-deep-charcoal: #334155;
+  --color-electric-iris: #0f4c5c;
+  --gradient-electric-iris: linear-gradient(135deg, #0f4c5c 0%, #165e70 100%);
+  --color-lilac-whisper: #d9ecee;
+  --color-hot-magenta: #0f4c5c;
+
+  /* Crisp clinical geometry */
+  --radius-cards: 12px;
+  --radius-buttons: 8px;
+  --radius-tags: 6px;
+  --radius-inputs: 8px;
+  --radius-small: 8px;
+  --radius: 12px;
+
+  /* Subtle elevation (borders do the work, not neon glows) */
+  --shadow-xl: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-glow: 0 2px 8px rgba(15, 76, 92, 0.14);
+
+  /* Surfaces & text */
+  --bg: #f6f8fa;
+  --surface: #ffffff;
+  --surface-2: #eef3f6;
+  --surface-3: #f8fafc;
+  --text: #0f172a;
+  --text-1: #0f172a;
+  --text-2: #334155;
+  --text-3: #64748b;
+  --line: #dbe3ea;
+  --line-soft: #e6edf2;
+
+  /* Brand & clinical accent (Medical Teal) */
+  --brand: #0f4c5c;
+  --brand-contrast: #e6f4f6;
+  --banner-grad: linear-gradient(135deg, #0f4c5c 0%, #155e70 100%);
+  --aside-grad: linear-gradient(180deg, #0f3a47 0%, #0f4c5c 100%);
+  --accent: #0f4c5c;
+  --accent-strong: #0b3b48;
+  --focus: #0e7490;
+
+  /* Clinical teal tint (rgb triplet) */
+  --tint: 15 76 92;
+  --tint-text: #0f4c5c;
+  --tint-accent: #156578;
+  --saved: #0f6b5b;
+  --ok: #166534;
+  --ok-dot: #16a34a;
+
+  /* Semantic clinical severity tokens */
+  --avoid-bg: #fef2f2;
+  --avoid-text: #991b1b;
+  --avoid-border: #fecaca;
+  --avoid-strip: #dc2626;
+  --caution-bg: #fffbeb;
+  --caution-text: #92400e;
+  --caution-border: #fde68a;
+  --caution-strip: #d97706;
+  --renal-bg: #eff6ff;
+  --renal-text: #1e40af;
+  --info-bg: #eff6ff;
+  --info-border: #bfdbfe;
+  --info-text: #1e40af;
+  --info-strip: #2563eb;
+  --err-bg: #fef2f2;
+  --err-border: #fecaca;
+  --err-text: #991b1b;
+  --warn-bg: #fffbeb;
+  --warn-text: #92400e;
+
+  /* Controls */
+  --danger-btn: #b91c1c;
+  --danger-btn-hover: #991b1b;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --check-border: #94a3b8;
+  --check-bg: #0f4c5c;
+  --switch-bg: #cbd5e1;
+  --chip-bg: #f1f5f9;
+  --count-bg: #e2e8f0;
+  --glass: rgba(255, 255, 255, 0.92);
+  --toast-bg: #0f2937;
+  --toast-text: #f8fafc;
+
+  /* Category icon tints */
+  --cat-orange-bg: #fef2f2;
+  --cat-orange-fg: #991b1b;
+  --cat-purple-bg: #f1f5f9;
+  --cat-purple-fg: #334155;
+  --cat-amber-bg: #fffbeb;
+  --cat-amber-fg: #92400e;
+  --cat-blue-bg: #eff6ff;
+  --cat-blue-fg: #1e40af;
+  --cat-teal-bg: #ecfeff;
+  --cat-teal-fg: #0f4c5c;
+  --cat-rose-bg: #fff1f2;
+  --cat-rose-fg: #9f1239;
+
+  line-height: 1.65;
+  overflow-x: clip;
+}
+
+.dark {
+  --bg: #0c131d;
+  --surface: #131d2b;
+  --surface-2: #0f1723;
+  --surface-3: #182536;
+  --text: #e2e8f0;
+  --text-1: #f1f5f9;
+  --text-2: #cbd5e1;
+  --text-3: #94a3b8;
+  --line: #233144;
+  --line-soft: #1c2838;
+
+  --brand: #134e5e;
+  --brand-contrast: #cffafe;
+  --banner-grad: linear-gradient(135deg, #103b48 0%, #154d5d 100%);
+  --aside-grad: linear-gradient(180deg, #0d2631 0%, #113542 100%);
+  --accent: #228096;
+  --accent-strong: #1b697c;
+  --focus: #38bdf8;
+
+  --tint: 56 152 168;
+  --tint-text: #67c5d4;
+  --tint-accent: #3898a8;
+  --saved: #34d399;
+  --ok: #4ade80;
+  --ok-dot: #22c55e;
+
+  /* Night-shift desaturated clinical alerts */
+  --avoid-bg: #261417;
+  --avoid-text: #fca5a5;
+  --avoid-border: #5c262d;
+  --avoid-strip: #ef4444;
+  --caution-bg: #241d0f;
+  --caution-text: #fcd34d;
+  --caution-border: #523e18;
+  --caution-strip: #f59e0b;
+  --renal-bg: #122036;
+  --renal-text: #93c5fd;
+  --info-bg: #122036;
+  --info-border: #1e3a5f;
+  --info-text: #93c5fd;
+  --info-strip: #3b82f6;
+  --err-bg: #261417;
+  --err-border: #5c262d;
+  --err-text: #fca5a5;
+  --warn-bg: #241d0f;
+  --warn-text: #fcd34d;
+
+  --danger-btn: #b91c1c;
+  --danger-btn-hover: #991b1b;
+  --input-bg: #0c131d;
+  --input-border: #2c3e55;
+  --check-border: #475569;
+  --check-bg: #228096;
+  --switch-bg: #334155;
+  --chip-bg: #1a2738;
+  --count-bg: #1e2d40;
+  --glass: rgba(12, 19, 29, 0.92);
+  --toast-bg: #163a47;
+  --toast-text: #f1f5f9;
+
+  --cat-orange-bg: #2a181a;
+  --cat-orange-fg: #fca5a5;
+  --cat-purple-bg: #1c2433;
+  --cat-purple-fg: #cbd5e1;
+  --cat-amber-bg: #261f11;
+  --cat-amber-fg: #fcd34d;
+  --cat-blue-bg: #132238;
+  --cat-blue-fg: #93c5fd;
+  --cat-teal-bg: #112a32;
+  --cat-teal-fg: #67c5d4;
+  --cat-rose-bg: #2a1620;
+  --cat-rose-fg: #fda4af;
+}
+
+/* Tabular figures for all clinical numbers & metrics */
+.audit-stats b,
+.stat-tile b,
+.count,
+.nav-count,
+.unit-input input,
+.geriatric-panel .text-3xl,
+.edge-ai-cdss-panel .text-3xl,
+td,
+time {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Topbar: crisp light clinical header in light mode, slate in dark mode */
+.topbar {
+  height: 60px;
+  background: var(--surface);
+  color: var(--text);
+  border-bottom: 1px solid var(--line);
+}
+.topbar .breadcrumb span {
+  color: var(--text-3);
+}
+.topbar .breadcrumb strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Sidebar: calm clinical navigation */
+.sidebar {
+  background: var(--surface);
+  border-left: 1px solid var(--line);
+}
+.brand-mark {
+  border-radius: 10px;
+}
+.nav-item {
+  border-radius: 8px;
+  font-weight: 500;
+}
+.nav-item.active {
+  background: rgb(var(--tint) / 0.1);
+  color: var(--tint-text);
+  font-weight: 650;
+}
+.sidebar-actions .sidebar-sync,
+.sidebar-actions .sidebar-tour,
+.sidebar-actions .sidebar-glossary,
+.sidebar-actions .sidebar-survey {
+  border-radius: 8px;
+}
+
+/* Buttons: crisp medical controls instead of glossy pills */
+.button {
+  border-radius: var(--radius-buttons);
+  font-weight: 600;
+  min-height: 40px;
+  padding: 8px 16px;
+}
+.button:hover:not(:disabled) {
+  transform: none;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+.button.secondary {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--text);
+  border-radius: var(--radius-buttons);
+}
+.button.secondary:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--tint-accent);
+}
+
+/* Cards & panels: subtle 1px borders, clean 12px radius, zero heavy blur */
+.panel,
+.audit,
+.category-card,
+.med-card,
+.empty-state,
+.table-wrap,
+.login-layout {
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-xl);
+}
+.med-card {
+  padding: 18px 20px 12px;
+}
+.med-card:hover {
+  border-color: var(--tint-accent);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+.med-list-row {
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+.category-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--tint-accent);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+.regimen-banner {
+  background: var(--brand);
+  background-image: var(--banner-grad);
+  border-radius: var(--radius-cards);
+  padding: 22px 26px;
+  box-shadow: var(--shadow-xl);
+}
+
+/* Search & filter controls */
+.search-field,
+.search-hero {
+  border-radius: 10px;
+  min-height: 48px;
+  padding: 8px 14px;
+}
+.choice-trigger,
+.choice-input {
+  border-radius: 8px;
+}
+
+/* Clinical badges: compact and scannable */
+.badge {
+  border-radius: var(--radius-tags);
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Alert cards with clinical 4px RTL severity strip */
+.audit-alert {
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-right-width: 4px;
+  background: var(--surface);
+  padding: 14px 16px;
+}
+.audit-alert.avoid {
+  border-color: var(--avoid-border);
+  border-right-color: var(--avoid-strip);
+  background: var(--avoid-bg);
+  color: var(--avoid-text);
+}
+.audit-alert.caution {
+  border-color: var(--caution-border);
+  border-right-color: var(--caution-strip);
+  background: var(--caution-bg);
+  color: var(--caution-text);
+}
+.audit-alert.info {
+  border-color: var(--info-border);
+  border-right-color: var(--info-strip);
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+
+/* Modals: crisp clinical dialog */
+.modal {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+}
+.clinical-box {
+  border-radius: 10px;
+}
+.notice {
+  border-radius: 8px;
+}
+
+/* Print ergonomics */
+@media print {
+  .panel,
+  .audit,
+  .med-card,
+  .audit-alert {
+    box-shadow: none !important;
+  }
+}

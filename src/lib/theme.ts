@@ -25,7 +25,7 @@ export function applyTheme(preference: ThemePreference) {
   for (const meta of document.querySelectorAll<HTMLMetaElement>(
     'meta[name="theme-color"]',
   ))
-    meta.content = resolved === "dark" ? "#090d16" : "#f8fafc";
+    meta.content = resolved === "dark" ? "#0c131d" : "#f6f8fa";
   try {
     localStorage.setItem(KEY, preference);
   } catch {

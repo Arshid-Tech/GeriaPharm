@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight, X, Compass } from "lucide-react";
 
 const TOUR_KEY = "gp-tour-done";
@@ -152,7 +152,6 @@ export function TourGuide({
   const vh = window.innerHeight;
   const viewportIsNarrow = vw < MOBILE_BP;
   const tooltipW = viewportIsNarrow ? Math.min(vw - PAD * 2, DESKTOP_W) : DESKTOP_W;
-  // Mobile needs more vertical room for wrapped Persian/Arabic text.
   const tooltipH = viewportIsNarrow ? 320 : 220;
 
   let tooltipStyle: React.CSSProperties;
@@ -194,7 +193,7 @@ export function TourGuide({
         const paneStyle = (style: React.CSSProperties): React.CSSProperties => ({
           position: "fixed",
           zIndex: 9998,
-          background: "rgba(16,23,34,0.65)",
+          background: "rgba(12, 19, 29, 0.62)",
           backdropFilter: "blur(2px)",
           WebkitBackdropFilter: "blur(2px)",
           ...style,
@@ -210,7 +209,7 @@ export function TourGuide({
       })() : (
         <div
           className="fixed inset-0 z-[9998]"
-          style={{ background: "rgba(16,23,34,0.65)", backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)" }}
+          style={{ background: "rgba(12, 19, 29, 0.62)", backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)" }}
           onClick={finish}
           aria-hidden="true"
         />
@@ -218,7 +217,7 @@ export function TourGuide({
 
       {targetRect && (
         <div
-          className="fixed z-[9999] rounded-2xl pointer-events-none"
+          className="fixed z-[9999] rounded-xl pointer-events-none"
           aria-hidden="true"
           style={{
             top: targetRect.top - 5,
@@ -226,7 +225,7 @@ export function TourGuide({
             width: targetRect.width + 10,
             height: targetRect.height + 10,
             boxShadow:
-              "0 0 0 4px #4541fe, 0 0 0 8px rgba(69,65,254,0.20), 0 0 40px rgba(69,65,254,0.15)",
+              "0 0 0 3px #0f4c5c, 0 0 0 7px rgba(15, 76, 92, 0.22)",
           }}
         />
       )}
@@ -235,12 +234,12 @@ export function TourGuide({
         role="dialog"
         aria-modal="true"
         aria-label={`راهنمای سامانه — مرحله ${step + 1} از ${total}`}
-        className="fixed z-[10000] rounded-[28px] bg-white dark:bg-[#101722] border border-indigo-100 dark:border-indigo-900/50 p-5 shadow-2xl"
+        className="fixed z-[10000] rounded-2xl bg-white dark:bg-[#131d2b] border border-slate-200 dark:border-slate-800 p-5 shadow-2xl"
         style={tooltipStyle}
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Compass size={15} className="text-[#4541fe] shrink-0" />
+            <Compass size={15} className="text-[#0f4c5c] dark:text-[#67c5d4] shrink-0" />
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
               راهنمای سامانه · {step + 1} از {total}
             </span>
@@ -261,9 +260,9 @@ export function TourGuide({
               key={i}
               className={`rounded-full transition-all duration-200 ${
                 i === step
-                  ? "w-5 h-2 bg-[#4541fe]"
+                  ? "w-5 h-2 bg-[#0f4c5c] dark:bg-[#3898a8]"
                   : i < step
-                    ? "w-2 h-2 bg-[#4541fe]/40"
+                    ? "w-2 h-2 bg-[#0f4c5c]/40 dark:bg-[#3898a8]/45"
                     : "w-2 h-2 bg-slate-200 dark:bg-slate-700"
               }`}
             />
@@ -273,7 +272,7 @@ export function TourGuide({
         <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-2">
           {current.title}
         </h4>
-        <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-5">
+        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-5">
           {current.description}
         </p>
 
@@ -290,7 +289,7 @@ export function TourGuide({
               type="button"
               onClick={prev}
               disabled={step === 0}
-              className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
             >
               <ChevronRight size={13} aria-hidden />
               قبلی
@@ -298,7 +297,7 @@ export function TourGuide({
             <button
               type="button"
               onClick={next}
-              className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-full bg-[#4541fe] hover:bg-[#3733db] text-white transition-colors"
+              className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg bg-[#0f4c5c] hover:bg-[#0b3b48] dark:bg-[#228096] dark:hover:bg-[#1b697c] text-white transition-colors"
             >
               {step === total - 1 ? "پایان" : "بعدی"}
               {step < total - 1 && <ChevronLeft size={13} aria-hidden />}

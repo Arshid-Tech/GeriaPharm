@@ -16,10 +16,10 @@ export interface PrioritizedAlert extends Alert {
 /**
  * Context-Aware Alert Prioritizer.
  * Classifies alerts into 4 clinical priority weights to eliminate Alert Fatigue:
- * - CRITICAL (Weight 4 - Red): Fatal interactions (Opioid + Benzo, Warfarin + Amiodarone, CrCl < 15 strict avoid).
- * - HIGH (Weight 3 - Rose): Core Table 2 & 3 PIMs, avoid-level Interactions/Renal/Disease/Cumulative load.
- * - MODERATE (Weight 2 - Amber): Dose adjustment required, PPI > 8 weeks, strong anticholinergic monotherapy.
- * - CAUTION (Weight 1 - Blue/Violet): Table 4 items (SGLT2 inhibitors monitoring, Ticagrelor in >= 75yo).
+ * - CRITICAL (Weight 4): Fatal interactions (Opioid + Benzo, Warfarin + Amiodarone, CrCl < 15 strict avoid).
+ * - HIGH (Weight 3): Core Table 2 & 3 PIMs, avoid-level Interactions/Renal/Disease/Cumulative load.
+ * - MODERATE (Weight 2): Dose adjustment required, PPI > 8 weeks, strong anticholinergic monotherapy.
+ * - CAUTION (Weight 1): Table 4 items (SGLT2 inhibitors monitoring, Ticagrelor in >= 75yo).
  */
 export function prioritizeAlerts(rawAlerts: Alert[]): PrioritizedAlert[] {
   return rawAlerts
@@ -88,27 +88,27 @@ export function prioritizeAlerts(rawAlerts: Alert[]): PrioritizedAlert[] {
       > = {
         CRITICAL: {
           labelFa: "بحرانی / خطرناک",
-          bgClass: "bg-red-500/15",
-          textClass: "text-red-600 dark:text-red-400",
-          borderClass: "border-red-500/30",
+          bgClass: "bg-red-100 dark:bg-red-950/70",
+          textClass: "text-red-800 dark:text-red-300",
+          borderClass: "border-red-300 dark:border-red-800",
         },
         HIGH: {
           labelFa: "اولویت بالا (PIM)",
-          bgClass: "bg-rose-500/15",
-          textClass: "text-rose-600 dark:text-rose-400",
-          borderClass: "border-rose-500/30",
+          bgClass: "bg-rose-50 dark:bg-rose-950/60",
+          textClass: "text-rose-800 dark:text-rose-300",
+          borderClass: "border-rose-200 dark:border-rose-900",
         },
         MODERATE: {
           labelFa: "اولویت متوسط",
-          bgClass: "bg-amber-500/15",
-          textClass: "text-amber-600 dark:text-amber-400",
-          borderClass: "border-amber-500/30",
+          bgClass: "bg-amber-50 dark:bg-amber-950/60",
+          textClass: "text-amber-800 dark:text-amber-300",
+          borderClass: "border-amber-200 dark:border-amber-900",
         },
         CAUTION: {
           labelFa: "احتیاط بالینی",
-          bgClass: "bg-blue-500/15",
-          textClass: "text-blue-600 dark:text-blue-400",
-          borderClass: "border-blue-500/30",
+          bgClass: "bg-blue-50 dark:bg-blue-950/60",
+          textClass: "text-blue-800 dark:text-blue-300",
+          borderClass: "border-blue-200 dark:border-blue-900",
         },
       };
 

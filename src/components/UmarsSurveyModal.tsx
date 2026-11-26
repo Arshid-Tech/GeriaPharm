@@ -110,10 +110,10 @@ function QuestionCard({
 }: QuestionCardProps) {
   const answered = isValidAnswer(question, value);
   return (
-    <div className="p-4 sm:p-5 rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#151c28] space-y-3">
+    <div className="p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f1723] space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <span className="text-xs font-bold text-indigo-500 dark:text-indigo-400 block mb-0.5">
+          <span className="text-xs font-bold text-[#0f4c5c] dark:text-[#67c5d4] block mb-0.5">
             {question.number
               ? `سوال ${faNumber(question.number)} — ${question.title}`
               : question.title}
@@ -130,7 +130,7 @@ function QuestionCard({
         {answered && (
           <span
             aria-hidden="true"
-            className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs"
+            className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-xs"
           >
             ✓
           </span>
@@ -158,7 +158,7 @@ function QuestionCard({
                 onAdvance();
               }
             }}
-            className="w-32 sm:w-40 px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-slate-50 dark:bg-[#101722] text-center text-lg font-bold tracking-widest outline-none focus:border-indigo-500 dark:focus:border-indigo-400"
+            className="w-32 sm:w-40 px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#0c131d] text-center text-lg font-bold tracking-widest outline-none focus:border-[#0f4c5c] dark:focus:border-[#3898a8]"
           />
           <p className="text-xs text-slate-500 dark:text-slate-400">
             بازه مجاز: {faNumber(question.min)} تا {faNumber(question.max)} سال — برای
@@ -168,7 +168,7 @@ function QuestionCard({
             <p
               id={`${question.id}-error`}
               role="alert"
-              className="text-xs font-medium text-rose-600 dark:text-rose-400"
+              className="text-xs font-medium text-red-700 dark:text-red-400"
             >
               {error}
             </p>
@@ -181,10 +181,10 @@ function QuestionCard({
             return (
               <label
                 key={String(option.value)}
-                className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition text-xs sm:text-sm ${
+                className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition text-xs sm:text-sm ${
                   isSelected
-                    ? "border-indigo-500 bg-indigo-500/10 text-indigo-900 dark:text-indigo-200 font-medium"
-                    : "border-gray-200 dark:border-gray-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-300"
+                    ? "border-[#0f4c5c] dark:border-[#3898a8] bg-[#0f4c5c]/8 dark:bg-[#3898a8]/15 text-slate-900 dark:text-slate-100 font-medium"
+                    : "border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-300"
                 }`}
               >
                 <input
@@ -193,7 +193,7 @@ function QuestionCard({
                   value={String(option.value)}
                   checked={isSelected}
                   onChange={() => onChoice(option.value)}
-                  className="mt-0.5 w-4 h-4 text-indigo-600 border-gray-300 dark:border-gray-700 flex-shrink-0"
+                  className="mt-0.5 w-4 h-4 text-[#0f4c5c] border-slate-300 dark:border-slate-700 flex-shrink-0"
                 />
                 <span className="leading-relaxed">{option.label}</span>
               </label>
@@ -243,10 +243,10 @@ function SectionChips({
             }}
             onClick={() => onSelect(section.id)}
             style={{ scrollSnapAlign: "start" }}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition border flex-shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition border flex-shrink-0 ${
               isActive
-                ? "bg-indigo-600 text-white border-indigo-600 shadow-md"
-                : "bg-slate-50 dark:bg-[#151c28] text-slate-700 dark:text-slate-300 border-gray-200 dark:border-gray-800 hover:border-indigo-300"
+                ? "bg-[#0f4c5c] dark:bg-[#228096] text-white border-[#0f4c5c] dark:border-[#228096]"
+                : "bg-slate-50 dark:bg-[#0f1723] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-[#0f4c5c]/50"
             }`}
           >
             <span>
@@ -255,11 +255,11 @@ function SectionChips({
                 : section.label}
             </span>
             <span
-              className={`px-1.5 py-0.5 rounded-full text-[10px] ${
+              className={`px-1.5 py-0.5 rounded text-[10px] ${
                 isActive
                   ? "bg-white/20 text-white"
                   : complete
-                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
                     : "bg-slate-200 dark:bg-slate-800 text-slate-500"
               }`}
             >
@@ -296,12 +296,12 @@ function AdminSurveyPanel({
   onClear,
 }: AdminSurveyPanelProps) {
   const secondary =
-    "flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/70 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-indigo-500/20 disabled:opacity-50 text-slate-700 dark:text-slate-200 text-xs font-medium transition";
+    "flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 disabled:opacity-50 text-slate-700 dark:text-slate-200 text-xs font-medium transition";
   return (
-    <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 space-y-3">
+    <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0f1723] border border-slate-200 dark:border-slate-800 space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <span className="inline-block px-2 py-0.5 rounded-lg bg-indigo-500 text-white text-[11px] font-bold mb-1">
+          <span className="inline-block px-2 py-0.5 rounded bg-[#0f4c5c] dark:bg-[#228096] text-white text-[11px] font-semibold mb-1">
             پنل مدیریت
           </span>
           <h4 className="font-bold text-sm">
@@ -330,7 +330,7 @@ function AdminSurveyPanel({
           type="button"
           onClick={onExportJson}
           disabled={busy || !serverCount}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-medium transition"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#0f4c5c] hover:bg-[#0b3b48] dark:bg-[#228096] dark:hover:bg-[#1b697c] disabled:opacity-50 text-white text-xs font-medium transition"
         >
           <Download size={14} />
           <span>خروجی JSON</span>
@@ -357,7 +357,7 @@ function AdminSurveyPanel({
           type="button"
           onClick={onClear}
           disabled={busy || (serverCount === 0 && localCount === 0)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 disabled:opacity-50 text-rose-600 dark:text-rose-400 text-xs font-medium transition"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-50 dark:bg-red-950/50 hover:bg-red-100 dark:hover:bg-red-950/80 border border-red-200 dark:border-red-900 disabled:opacity-50 text-red-700 dark:text-red-400 text-xs font-medium transition"
           title="پاک کردن همه پاسخ‌ها"
         >
           <Trash2 size={14} />
@@ -367,7 +367,6 @@ function AdminSurveyPanel({
     </div>
   );
 }
-
 
 interface SuccessPanelProps {
   delivered: boolean;
@@ -387,13 +386,13 @@ function SuccessPanel({
   return (
     <div className="py-10 text-center space-y-4 max-w-md mx-auto">
       <div
-        className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto ${
+        className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto ${
           delivered
-            ? "bg-emerald-500/15 text-emerald-500"
-            : "bg-amber-500/15 text-amber-500"
+            ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
+            : "bg-amber-500/15 text-amber-700 dark:text-amber-400"
         }`}
       >
-        {delivered ? <CheckCircle2 size={34} /> : <CloudOff size={32} />}
+        {delivered ? <CheckCircle2 size={30} /> : <CloudOff size={28} />}
       </div>
       <h3 className="text-xl font-bold">از بازخورد ارزشمند شما سپاسگزاریم!</h3>
       <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -416,14 +415,14 @@ function SuccessPanel({
         <button
           type="button"
           onClick={onNew}
-          className="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition"
+          className="px-5 py-2.5 rounded-lg bg-[#0f4c5c] hover:bg-[#0b3b48] dark:bg-[#228096] dark:hover:bg-[#1b697c] text-white font-medium text-sm transition"
         >
           ثبت بازخورد جدید
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="px-5 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium text-sm transition"
+          className="px-5 py-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium text-sm transition"
         >
           بازگشت به برنامه
         </button>
@@ -531,6 +530,19 @@ export function UmarsSurveyModal({
       failed ? "ارسال برخی پاسخ‌ها ناموفق بود؛ به‌زودی دوباره تلاش می‌شود." : "",
     );
   }, [online]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const prev = document.activeElement as HTMLElement | null;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      prev?.focus?.();
+    };
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -745,20 +757,23 @@ export function UmarsSurveyModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-3 sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label="ارزیابی UMARS"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
-      <div className="bg-white dark:bg-[#101722] border border-gray-200 dark:border-gray-800 rounded-[28px] sm:rounded-[42px] max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-800 dark:text-slate-100">
+      <div className="bg-white dark:bg-[#131d2b] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-800 dark:text-slate-100">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 dark:border-gray-800 bg-slate-50/50 dark:bg-[#151c28]/40 flex-shrink-0">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-[#0f1723] flex-shrink-0">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
-              <ClipboardList size={22} />
+            <div className="w-10 h-10 rounded-lg bg-[#0f4c5c]/10 dark:bg-[#3898a8]/15 text-[#0f4c5c] dark:text-[#67c5d4] flex items-center justify-center flex-shrink-0">
+              <ClipboardList size={21} />
             </div>
             <div className="min-w-0">
-              <h2 className="text-base sm:text-xl font-bold tracking-tight truncate">
+              <h2 className="text-base sm:text-lg font-bold tracking-tight truncate">
                 ارزیابی کیفیت اپلیکیشن (UMARS)
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 hidden sm:block">
@@ -767,8 +782,9 @@ export function UmarsSurveyModal({
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex-shrink-0"
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex-shrink-0"
             aria-label="بستن"
           >
             <X size={18} />
@@ -800,7 +816,7 @@ export function UmarsSurveyModal({
             {notice && (
               <p
                 role="status"
-                className="text-xs text-center font-medium text-amber-600 dark:text-amber-400"
+                className="text-xs text-center font-medium text-amber-700 dark:text-amber-400"
               >
                 {notice}
               </p>
@@ -810,7 +826,7 @@ export function UmarsSurveyModal({
           <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
             <div
               ref={bodyRef}
-              className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 space-y-5"
+              className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-5 space-y-4"
             >
               {isAdmin && (
                 <AdminSurveyPanel
@@ -828,7 +844,7 @@ export function UmarsSurveyModal({
               {notice && (
                 <p
                   role="status"
-                  className="text-xs font-medium text-amber-600 dark:text-amber-400"
+                  className="text-xs font-medium text-amber-700 dark:text-amber-400"
                 >
                   {notice}
                 </p>
@@ -843,7 +859,7 @@ export function UmarsSurveyModal({
                 </div>
                 <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                   <div
-                    className="h-full bg-indigo-600 transition-all duration-300"
+                    className="h-full bg-[#0f4c5c] dark:bg-[#228096] transition-all duration-300"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -854,8 +870,8 @@ export function UmarsSurveyModal({
                 chipRefs={chipRefs}
                 onSelect={selectSection}
               />
-              <div className="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-[#151c28]/60 border border-gray-100 dark:border-gray-800">
-                <h3 className="font-bold text-sm text-indigo-600 dark:text-indigo-400">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-slate-50 dark:bg-[#0f1723] border border-slate-200/80 dark:border-slate-800">
+                <h3 className="font-bold text-sm text-[#0f4c5c] dark:text-[#67c5d4]">
                   {section.title}
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
@@ -876,13 +892,13 @@ export function UmarsSurveyModal({
               {formError && (
                 <p
                   role="alert"
-                  className="text-xs font-medium text-rose-600 dark:text-rose-400"
+                  className="text-xs font-medium text-red-700 dark:text-red-400"
                 >
                   {formError}
                 </p>
               )}
             </div>
-            <div className="flex-shrink-0 border-t border-gray-100 dark:border-gray-800 bg-slate-50/60 dark:bg-[#151c28]/40 p-3 sm:p-5 space-y-3">
+            <div className="flex-shrink-0 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-[#0f1723] p-3 sm:p-4 space-y-3">
               <div className="flex items-center justify-between gap-3">
                 <p
                   className="text-xs text-slate-500 dark:text-slate-400"
@@ -893,7 +909,7 @@ export function UmarsSurveyModal({
                 </p>
                 <p className="text-xs hidden sm:block">
                   {answeredCount === TOTAL_QUESTIONS ? (
-                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                    <span className="text-emerald-700 dark:text-emerald-400 font-medium">
                       همه پرسش‌ها پاسخ داده شده‌اند.
                     </span>
                   ) : (
@@ -909,7 +925,7 @@ export function UmarsSurveyModal({
                   type="button"
                   onClick={goPrevious}
                   disabled={!previousStep}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 text-slate-700 dark:text-slate-200 font-medium text-sm transition"
+                  className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 disabled:opacity-40 text-slate-700 dark:text-slate-200 font-medium text-sm transition"
                 >
                   <ChevronRight size={15} />
                   <span>قبلی</span>
@@ -919,7 +935,7 @@ export function UmarsSurveyModal({
                     type="button"
                     onClick={goNext}
                     disabled={!canAdvance}
-                    className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 text-slate-700 dark:text-slate-200 font-medium text-sm transition"
+                    className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 disabled:opacity-40 text-slate-700 dark:text-slate-200 font-medium text-sm transition"
                   >
                     <span>بعدی</span>
                     <ChevronLeft size={15} />
@@ -928,7 +944,7 @@ export function UmarsSurveyModal({
                 <button
                   type="submit"
                   disabled={answeredCount === 0 || busy}
-                  className="sm:ms-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold text-sm transition shadow-lg shadow-indigo-500/20"
+                  className="sm:ms-auto flex items-center justify-center gap-2 px-5 py-2 rounded-lg bg-[#0f4c5c] hover:bg-[#0b3b48] dark:bg-[#228096] dark:hover:bg-[#1b697c] disabled:opacity-50 text-white font-semibold text-sm transition"
                 >
                   <Send size={15} />
                   <span>ثبت نهایی</span>
@@ -941,4 +957,3 @@ export function UmarsSurveyModal({
     </div>
   );
 }
-
