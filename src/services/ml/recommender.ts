@@ -1,5 +1,4 @@
 import type { DrugRecord } from "../../types/types";
-import { seedData } from "../../data/seedData";
 import {
   type PatientProfile,
   acbScoreFor,
@@ -33,7 +32,7 @@ export interface DrugSubstitutionRecommendation {
 }
 
 export interface RecommendationOptions {
-  /** Verified drug registry to search for safer pharmacologic neighbors. Defaults to `seedData`. */
+  /** Verified drug registry to search for safer pharmacologic neighbors. */
   registry?: DrugRecord[];
   /** Active patient conditions used as a hard safety filter (zero contraindicated suggestions). */
   selectedConditions?: string[];
@@ -366,7 +365,7 @@ export function recommendDrugSubstitutions(
   medications: DrugRecord[],
   options: RecommendationOptions = {},
 ): DrugSubstitutionRecommendation[] {
-  const registry = options.registry ?? seedData;
+  const registry = options.registry ?? [];
   const selectedConditions = options.selectedConditions ?? [];
   const profile = options.profile ?? {};
   const regimenIds = new Set(medications.map((m) => m.id));
@@ -404,7 +403,7 @@ export function recommendDrugSubstitutions(
     }
 
     // Supplement with safe k-NN pharmacologic neighbors from the verified registry
-    if (alts.length < 2) {
+    if (alts.length < 2 && registry.length > 0) {
       const neighbors = findVectorSafeNeighbors(
         med,
         registry,
