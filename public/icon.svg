@@ -1,17 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
   <defs>
-    <linearGradient id="gp-bg" x1="12" y1="8" x2="116" y2="120" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#101722"/>
-      <stop offset="55%" stop-color="#2a288a"/>
-      <stop offset="100%" stop-color="#4541fe"/>
-    </linearGradient>
-    <linearGradient id="gp-accent" x1="34" y1="30" x2="96" y2="98" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#d9c6ff"/>
+    <linearGradient id="gp-clinical-bg" x1="12" y1="8" x2="116" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f3a47"/>
+      <stop offset="100%" stop-color="#0f4c5c"/>
     </linearGradient>
   </defs>
-  <rect width="128" height="128" rx="30" fill="url(#gp-bg)"/>
-  <path d="M64 20L98 34V62C98 84.5 83.4 101.6 64 109C44.6 101.6 30 84.5 30 62V34L64 20Z" fill="#ffffff" fill-opacity="0.1" stroke="url(#gp-accent)" stroke-width="5" stroke-linejoin="round"/>
-  <path d="M57 44H71V57H84V71H71V84H57V71H44V57H57V44Z" fill="#ffffff"/>
-  <circle cx="94" cy="34" r="7" fill="#fe0f83"/>
+  <rect width="128" height="128" rx="24" fill="url(#gp-clinical-bg)"/>
+  <path d="M64 22L96 35V62C96 83.2 82.4 99.6 64 106.5C45.6 99.6 32 83.2 32 62V35L64 22Z" fill="#ffffff" fill-opacity="0.08" stroke="#cce7ec" stroke-width="4.5" stroke-linejoin="round"/>
+  <path d="M58 45H70V58H83V70H70V83H58V70H45V58H58V45Z" fill="#ffffff"/>
 </svg>
