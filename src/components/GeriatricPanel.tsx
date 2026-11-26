@@ -11,7 +11,7 @@ import {
 
 interface GeriatricPanelProps {
   panel: PanelEvaluation;
-  breakdown: BreakdownRow[];
+  breakdown?: BreakdownRow[];
 }
 
 /**
