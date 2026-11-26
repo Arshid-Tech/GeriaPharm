@@ -22,7 +22,7 @@ export const BEERS_GROUPS: BeersGroupMeta[] = [
     testId: "beers-table2",
     title: "خطرات و هشدارهای عمومی داروها",
     subtitle: "جدول ۲ · داروهای نامناسب مستقل از بیماری",
-    accent: "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300",
+    accent: "bg-red-50 text-red-800 border border-red-200/80 dark:bg-red-950/60 dark:text-red-300 dark:border-red-900",
     defaultOpen: true,
   },
   {
@@ -31,7 +31,7 @@ export const BEERS_GROUPS: BeersGroupMeta[] = [
     title: "تداخل دارو با بیماری‌ها",
     subtitle: "جدول ۳ · تشدید بیماری‌های زمینه‌ای",
     accent:
-      "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300",
+      "bg-slate-100 text-slate-800 border border-slate-300/80 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700",
     defaultOpen: false,
   },
   {
@@ -40,7 +40,7 @@ export const BEERS_GROUPS: BeersGroupMeta[] = [
     title: "تداخل‌های مهم دارو–دارو",
     subtitle: "جدول ۵ · ترکیب‌های پرخطر و بار تجمعی",
     accent:
-      "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
+      "bg-amber-50 text-amber-900 border border-amber-200/80 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-900",
     defaultOpen: false,
   },
   {
@@ -48,7 +48,7 @@ export const BEERS_GROUPS: BeersGroupMeta[] = [
     testId: "beers-table6",
     title: "هشدارهای تنظیم دوز بر اساس کلیه",
     subtitle: "جدول ۶ · آستانه‌های CrCl و eGFR",
-    accent: "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300",
+    accent: "bg-blue-50 text-blue-900 border border-blue-200/80 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-900",
     defaultOpen: false,
   },
   {
@@ -57,7 +57,7 @@ export const BEERS_GROUPS: BeersGroupMeta[] = [
     title: "داروهای نیازمند احتیاط",
     subtitle: "جدول ۴ · مصرف با پایش دقیق",
     accent:
-      "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
+      "bg-emerald-50 text-emerald-900 border border-emerald-200/80 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-900",
     defaultOpen: false,
   },
 ];
