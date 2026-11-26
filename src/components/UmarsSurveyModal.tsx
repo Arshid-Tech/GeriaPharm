@@ -368,7 +368,6 @@ function AdminSurveyPanel({
   );
 }
 
-
 interface SuccessPanelProps {
   delivered: boolean;
   summary: string;
@@ -531,6 +530,19 @@ export function UmarsSurveyModal({
       failed ? "ارسال برخی پاسخ‌ها ناموفق بود؛ به‌زودی دوباره تلاش می‌شود." : "",
     );
   }, [online]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const prev = document.activeElement as HTMLElement | null;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      prev?.focus?.();
+    };
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -749,6 +761,9 @@ export function UmarsSurveyModal({
       role="dialog"
       aria-modal="true"
       aria-label="ارزیابی UMARS"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div className="bg-white dark:bg-[#101722] border border-gray-200 dark:border-gray-800 rounded-[28px] sm:rounded-[42px] max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-800 dark:text-slate-100">
         {/* Header */}
@@ -767,6 +782,7 @@ export function UmarsSurveyModal({
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex-shrink-0"
             aria-label="بستن"
@@ -941,4 +957,3 @@ export function UmarsSurveyModal({
     </div>
   );
 }
-
