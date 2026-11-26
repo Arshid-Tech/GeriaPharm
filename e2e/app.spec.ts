@@ -1,10 +1,19 @@
 import { test, expect } from "@playwright/test";
+import { seedData } from "../src/data/seedData";
+
 const email = "qa@example.test",
   password = "QA-only-password-59842!";
-const TOTAL = 73,
-  CNS_COUNT = 27,
-  GI_COUNT = 8,
-  CAUTION_COUNT = 14;
+const TOTAL = seedData.length,
+  CNS_COUNT = seedData.filter(
+    (d) => d.therapeuticCategory === "Central Nervous System",
+  ).length,
+  GI_COUNT = seedData.filter(
+    (d) => d.therapeuticCategory === "Gastrointestinal",
+  ).length,
+  CAUTION_COUNT = seedData.filter((d) =>
+    d.beersCategories.includes("USE_WITH_CAUTION"),
+  ).length;
+
 async function login(page: import("@playwright/test").Page) {
   await page.goto("/#admin");
   await page.getByLabel("ایمیل مدیر").fill(email);
@@ -14,6 +23,7 @@ async function login(page: import("@playwright/test").Page) {
     page.getByRole("button", { name: "افزودن دارو", exact: true }),
   ).toBeVisible();
 }
+
 test("Persian home, local font, desktop layout and no JavaScript errors", async ({
   page,
 }) => {
@@ -39,6 +49,7 @@ test("Persian home, local font, desktop layout and no JavaScript errors", async 
   await page.screenshot({ path: "artifacts/home-desktop.png", fullPage: true });
   expect(errors).toEqual([]);
 });
+
 test("theme toggle applies and persists dark mode across reload", async ({
   page,
 }) => {
@@ -52,7 +63,7 @@ test("theme toggle applies and persists dark mode across reload", async ({
     await page.evaluate(() =>
       getComputedStyle(document.body).getPropertyValue("--bg").trim(),
     ),
-  ).toBe("#090d16");
+  ).toBe("#0c131d");
   await page.reload();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await group.getByRole("button", { name: "روشن" }).click();
@@ -60,6 +71,7 @@ test("theme toggle applies and persists dark mode across reload", async ({
   await page.reload();
   await expect(page.locator("html")).not.toHaveClass(/dark/);
 });
+
 test("offline pill appears when disconnected", async ({ page, context }) => {
   await page.goto("/");
   // Some Chrome builds do not flip navigator.onLine under CDP emulation,
@@ -78,6 +90,7 @@ test("offline pill appears when disconnected", async ({ page, context }) => {
     page.getByText("حالت آفلاین · بانک داده در دسترس است"),
   ).toBeHidden();
 });
+
 test("Persian and English search, details, private note and bookmark persistence", async ({
   page,
 }) => {
@@ -104,9 +117,7 @@ test("Persian and English search, details, private note and bookmark persistence
   await expect(page.getByLabel(/یادداشت خصوصی بالینی/)).toHaveValue(
     "یادداشت آزمایشی بالینی",
   );
-  await page
-    .getByLabel(/یادداشت خصوصی بالینی/)
-    .fill("");
+  await page.getByLabel(/یادداشت خصوصی بالینی/).fill("");
   await page.keyboard.press("Escape");
   await page.goto("/#library");
   await search.fill("Xanax");
@@ -114,6 +125,7 @@ test("Persian and English search, details, private note and bookmark persistence
   await search.fill("هیدروکسی‌زین");
   await expect(page.locator(".med-card")).toHaveCount(1);
 });
+
 test("regimen detects interactions, condition warnings and renal metric mismatch", async ({
   page,
 }) => {
@@ -141,21 +153,20 @@ test("regimen detects interactions, condition warnings and renal metric mismatch
   await expect(
     page.getByRole("heading", { name: "ترامادول · CrCl < 30 mL/min" }),
   ).toBeVisible();
-  await expect(page.locator(".stat-tile")).toHaveCount(4);
-  await expect(
-    page.getByRole("button", { name: /چاپ خلاصه/ }),
-  ).toBeVisible();
+  await expect(page.locator(".geriatric-panel")).toBeVisible();
+  await expect(page.locator(".edge-ai-cdss-panel")).toBeVisible();
   await page.screenshot({
     path: "artifacts/regimen-desktop.png",
     fullPage: true,
   });
 });
+
 test("admin is gated, login works, edit persists, backup downloads, audit and logout work", async ({
   page,
 }) => {
   await page.goto("/#admin");
   await expect(
-    page.getByRole("heading", { name: "ورود به مدیریت Geriapharm" }),
+    page.getByRole("heading", { name: "ورود به مدیریت GeriaPharm" }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: "افزودن دارو", exact: true }),
@@ -192,6 +203,7 @@ test("admin is gated, login works, edit persists, backup downloads, audit and lo
     page.getByRole("heading", { name: "ورود به مدیریت GeriaPharm" }),
   ).toBeVisible();
 });
+
 test("admin creation, dirty form protection, invalid import and deletion confirmation", async ({
   page,
 }) => {
@@ -227,6 +239,7 @@ test("admin creation, dirty form protection, invalid import and deletion confirm
     page.getByRole("button", { name: "حذف داروی آزمایشی", exact: true }),
   ).not.toBeVisible();
 });
+
 test("mobile RTL, no overflow and accessible login", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
@@ -271,6 +284,7 @@ test("mobile RTL, no overflow and accessible login", async ({ page }) => {
     fullPage: true,
   });
 });
+
 test("production PWA works after offline reload without caching auth APIs", async ({
   page,
   context,
@@ -393,7 +407,7 @@ test("custom filter dropdown supports keyboard, selection and outside dismissal"
   const beers = page.getByRole("combobox", { name: "دسته معیار بیرز" });
   await beers.click();
   await page
-    .getByRole("option", { name: "مصرف با احتیاط", exact: true })
+    .getByRole("option", { name: "داروهای نیازمند احتیاط", exact: true })
     .click();
   await expect(page.locator(".med-card")).toHaveCount(CAUTION_COUNT);
   await beers.click();
